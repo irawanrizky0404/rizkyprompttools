@@ -1,0 +1,171 @@
+﻿# AI Automation Workflow Generator - Cursor Rules
+
+## 1. Project Architecture
+
+### 1.1 Directory Structure Principles
+```
+ai-automation/
+├── steps/                  # Step components for each wizard step
+├── store/                  # Zustand state management
+├── types/                  # TypeScript interfaces
+└── utils/                  # Dictionary and markdown generator
+```
+
+### 1.2 File Naming Conventions
+| Type | Convention | Example |
+|------|------------|---------|
+| Components | PascalCase | `TriggerAppStep.tsx` |
+| Hooks | camelCase with `use` prefix | `useWizardNavigation.ts` |
+| Utils | camelCase | `dictionary.ts` |
+| Store | `use` prefix + Store suffix | `useWizardStore.ts` |
+| Types | PascalCase | `WizardStep.ts` |
+| Constants | SCREAMING_SNAKE_CASE | `WIZARD_STEPS.ts` |
+
+---
+
+## 2. TypeScript Clean Code Standards
+
+### 2.1 Type Definitions (STRICT MODE)
+```typescript
+// Required: Explicit return types for functions
+function generatePrompt(state: WizardState): string
+
+// Required: Interface over type for extensibility
+interface WizardState {
+  currentStep: number;
+  selections: WizardSelections;
+}
+
+// Required: Discriminated unions for step types
+type StepType = 
+  | { kind: 'single'; options: SingleChoiceOption[] }
+  | { kind: 'multiple'; options: MultipleChoiceOption[] }
+
+// Forbidden: Any type without explicit justification
+// NO: const data: any
+// YES: const data: unknown (with type guard)
+```
+
+### 2.2 Import Order
+1. Next.js/React core imports
+2. Third-party libraries (Zustand, Lucide)
+3. Shadcn/Radix UI components
+4. Custom components
+5. Utils/Hooks/Store
+6. Types
+
+---
+
+## 3. State Management Guidelines
+
+### 3.1 Zustand Store Structure
+```typescript
+interface WizardStore {
+  // Navigation
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+
+  // Selections
+  selections: WizardSelections;
+  updateSelection: (step: keyof WizardSelections, value: any) => void;
+
+  // Generation
+  generatedPrompt: string;
+  generatePrompt: () => void;
+  resetWizard: () => void;
+}
+```
+
+### 3.2 State Update Rules
+- **Immutability First**: Never mutate state directly
+- **Atomic Updates**: Use spread operators for partial updates
+- **Type Safety**: All updates must preserve TypeScript types
+- **No Side Effects in Store**: Pure state management only
+
+---
+
+## 4. Component Architecture
+
+### 4.1 Selectable Card Contract
+```typescript
+interface SelectableCardProps {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  selected: boolean;
+  onSelect: (id: string) => void;
+  mode: 'single' | 'multiple';
+  optionalText?: string;
+  onOptionalTextChange?: (text: string) => void;
+}
+```
+
+### 4.2 Component Hierarchy
+```
+WizardShell
+├── Header
+│   └── Stepper (1-5 indicators)
+├── StepContent (dynamic based on currentStep)
+│   ├── TriggerAppStep
+│   ├── ActionAppStep
+│   ├── AIProcessingStep
+│   ├── ComplexityLevelStep
+│   └── OutputStep
+│       └── GenerateButton
+└── Footer
+    ├── BackButton
+    └── NextButton
+```
+
+---
+
+## 5. Markdown Generator Rules
+
+### 5.1 Template Literal Structure
+- Use tagged template literals for readability
+- All selections MUST reference `utils/dictionary.ts`
+- Include conditional rendering for optional fields
+- Output must be valid Markdown
+
+### 5.2 Dictionary Lookup Pattern
+```typescript
+// CORRECT
+const triggerInstructions = dictionary.triggerApps[selection.triggerApp];
+
+// WRONG - Hardcoded values
+const triggerInstructions = "Use Webhook as trigger";
+```
+
+---
+
+## 6. Performance Considerations
+
+### 6.1 React Optimization
+- Use `useCallback` for event handlers passed to child components
+- Use `useMemo` for expensive computations (dictionary lookups)
+- Lazy load step components with `dynamic()` import
+
+### 6.2 Bundle Optimization
+- Shadcn components: import only what's needed
+- Lucide icons: tree-shakeable named imports
+- No unused dependencies
+
+---
+
+## 7. Git & Commit Conventions
+
+### 7.1 Branch Naming
+- `feature/ai-automation-step-{N}`
+- `fix/automation-selection-bug`
+- `docs/automation-architecture-update`
+
+### 7.2 Commit Messages
+```
+feat: add trigger app selection step
+fix: resolve action app navigation issue
+docs: update automation architecture diagram
+refactor: extract automation dictionary mappings
+```

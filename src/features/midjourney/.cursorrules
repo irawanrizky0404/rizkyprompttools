@@ -1,0 +1,104 @@
+﻿# Midjourney Prompt Builder - Cursor Rules
+
+## 1. Project Architecture
+
+### 1.1 Directory Structure Principles
+```
+midjourney/
+├── steps/                  # Step components for each wizard step
+├── store/                  # Zustand state management
+├── types/                  # TypeScript interfaces
+└── utils/                  # Dictionary and markdown generator
+```
+
+### 1.2 File Naming Conventions
+| Type | Convention | Example |
+|------|------------|---------|
+| Components | PascalCase | `ArtMediumStep.tsx` |
+| Hooks | camelCase with `use` prefix | `useWizardNavigation.ts` |
+| Utils | camelCase | `dictionary.ts` |
+| Store | `use` prefix + Store suffix | `useWizardStore.ts` |
+| Types | PascalCase | `WizardStep.ts` |
+| Constants | SCREAMING_SNAKE_CASE | `WIZARD_STEPS.ts` |
+
+---
+
+## 2. TypeScript Clean Code Standards
+
+### 2.1 Type Definitions
+```typescript
+function generatePrompt(state: WizardState): string
+
+interface WizardState {
+  currentStep: number;
+  selections: WizardSelections;
+}
+
+type StepType = 
+  | { kind: 'single'; options: SingleChoiceOption[] }
+  | { kind: 'multiple'; options: MultipleChoiceOption[] }
+```
+
+### 2.2 Import Order
+1. Next.js/React core imports
+2. Third-party libraries (Zustand, Lucide)
+3. Shadcn/Radix UI components
+4. Custom components
+5. Utils/Hooks/Store
+6. Types
+
+---
+
+## 3. State Management
+
+### 3.1 Zustand Store Structure
+```typescript
+interface WizardStore {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  selections: WizardSelections;
+  updateSelection: (step: keyof WizardSelections, value: any) => void;
+  generatedPrompt: string;
+  generatePrompt: () => void;
+  resetWizard: () => void;
+}
+```
+
+### 3.2 State Update Rules
+- Immutability First
+- Atomic Updates
+- Type Safety
+- No Side Effects
+
+---
+
+## 4. Component Architecture
+
+### 4.1 Component Hierarchy
+```
+WizardShell
+├── Header
+│   └── Stepper (1-5 indicators)
+├── StepContent
+│   ├── ArtMediumStep
+│   ├── LightingStep
+│   ├── CameraLensStep
+│   ├── MoodVibeStep
+│   └── OutputStep
+└── Footer
+    ├── BackButton
+    └── NextButton
+```
+
+---
+
+## 5. Performance and Git Conventions
+
+- useCallback for event handlers
+- useMemo for dictionary lookups
+- Lazy load step components
+
+Branch naming: feature/midjourney-step-{N}
+Commit prefixes: feat:, fix:, docs:, refactor:
