@@ -32,7 +32,12 @@ const cicd: SelectableCardOption[] = [
 
 export const DeployStep: FC = () => {
   const { selections, updateSelection, updateNote } = useWizardStore();
-  const hp = useCallback((id: string) => updateSelection("deploy", { ...selections.deploy, platform: id }), [selections.deploy, updateSelection]);
+  const hp = useCallback((id: string) => {
+    const cur = selections.deploy.platform;
+    const arr = Array.isArray(cur) ? cur : cur ? [cur] : [];
+    const next = arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id];
+    updateSelection("deploy", { ...selections.deploy, platform: next });
+  }, [selections.deploy, updateSelection]);
   const hc = useCallback((id: string) => {
     const arr = selections.deploy.ciCd.includes(id) ? selections.deploy.ciCd.filter((x) => x !== id) : [...selections.deploy.ciCd, id];
     updateSelection("deploy", { ...selections.deploy, ciCd: arr });
@@ -45,8 +50,8 @@ export const DeployStep: FC = () => {
       <h2 className="text-lg font-semibold text-text">Deployment</h2>
       <div className="grid grid-cols-4 gap-1.5">
         {platforms.map((o) => (
-          <SelectableCard key={o.id} {...o} selected={selections.deploy.platform === o.id}
-            onSelect={hp} mode="single"
+          <SelectableCard key={o.id} {...o} selected={Array.isArray(selections.deploy.platform) ? selections.deploy.platform.includes(o.id) : selections.deploy.platform === o.id}
+            onSelect={hp} mode="multiple"
             optionalText={selections.notes[`deploy-platform-${o.id}`] ?? ""}
             onOptionalTextChange={(t) => np(o.id, t)} />
         ))}

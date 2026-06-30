@@ -30,7 +30,12 @@ const opts: SelectableCardOption[] = [
 
 export const IndustryStep: FC = () => {
   const { selections, updateSelection, updateNote } = useWizardStore();
-  const sel = useCallback((id: string) => updateSelection("industry", id), [updateSelection]);
+  const sel = useCallback((id: string) => {
+    const cur = selections.industry;
+    const arr = Array.isArray(cur) ? cur : cur ? [cur] : [];
+    const next = arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id];
+    updateSelection("industry", next);
+  }, [selections.industry, updateSelection]);
   const nt = useCallback((id: string, t: string) => updateNote(`industry-${id}`, t), [updateNote]);
 
   return (
@@ -38,8 +43,8 @@ export const IndustryStep: FC = () => {
       <h2 className="text-lg font-semibold text-text">Which industry?</h2>
       <div className="grid grid-cols-4 gap-1.5">
         {opts.map((o) => (
-          <SelectableCard key={o.id} {...o} selected={selections.industry === o.id}
-            onSelect={sel} mode="single"
+          <SelectableCard key={o.id} {...o} selected={Array.isArray(selections.industry) ? selections.industry.includes(o.id) : selections.industry === o.id}
+            onSelect={sel} mode="multiple"
             optionalText={selections.notes[`industry-${o.id}`] ?? ""}
             onOptionalTextChange={(t) => nt(o.id, t)} />
         ))}

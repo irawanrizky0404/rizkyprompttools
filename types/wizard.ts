@@ -23,6 +23,7 @@ export interface AISelections {
   provider: string | null;
   model: string | null;
   temperature: string | null;
+  language: string;
 }
 
 export interface WizardSelections {
@@ -87,14 +88,19 @@ export const WIZARD_STEPS = [
 ] as const;
 
 export function hasSelectionForStep(step: number, selections: WizardSelections): boolean {
+  const hasVal = (v: any) => {
+    if (v === null || v === undefined) return false;
+    if (Array.isArray(v)) return v.length > 0;
+    return true;
+  };
   switch (step) {
     case 1: return selections.type !== null;
-    case 2: return selections.industry !== null;
+    case 2: return hasVal(selections.industry);
     case 3: return selections.auth.method.length > 0 || selections.auth.providers.length > 0;
     case 4: return selections.features.length > 0;
     case 5: return selections.database.primary !== null;
     case 6: return selections.design.style !== null;
-    case 7: return selections.deploy.platform !== null;
+    case 7: return hasVal(selections.deploy.platform);
     case 8: return true;
     default: return false;
   }
@@ -108,6 +114,6 @@ export const INITIAL_SELECTIONS: WizardSelections = {
   database: { primary: null, orm: null },
   design: { style: null, colorScheme: null, typography: null },
   deploy: { platform: null, ciCd: [] },
-  ai: { provider: null, model: null, temperature: null },
+  ai: { provider: null, model: null, temperature: null, language: "en" },
   notes: {},
 };

@@ -11,7 +11,9 @@ export const SelectableCard: FC<SelectableCardProps> = ({
 }) => {
   const handleClick = useCallback(() => onSelect(id), [id, onSelect]);
   const handleKey = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(id); }
+    const target = e.target as HTMLElement;
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+    if (e.key === "Enter") { e.preventDefault(); onSelect(id); }
   }, [id, onSelect]);
 
   return (

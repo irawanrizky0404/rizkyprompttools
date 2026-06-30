@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type FC, type ComponentType } from "react";
+import { useMemo, useEffect, useRef, type FC, type ComponentType } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { TypeStep } from "@/components/wizard/steps/type-step";
 import { IndustryStep } from "@/components/wizard/steps/industry-step";
@@ -18,11 +18,17 @@ const map: Record<number, ComponentType> = {
 };
 
 export const StepContent: FC = () => {
-  const step = useWizardStore((s) => s.currentStep);
-  const Comp = useMemo(() => map[step], [step]);
+  const { currentStep, nextStep, canProceed } = useWizardStore();
+  const Comp = useMemo(() => map[currentStep], [currentStep]);
 
   return (
-    <div className="flex flex-col h-full gap-3 animate">
+    <div className="flex flex-col h-full gap-3 animate" onKeyDown={(e) => {
+      if (e.key !== " " || currentStep >= 8) return;
+      const el = document.activeElement;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
+      e.preventDefault();
+      setTimeout(() => nextStep(), 0);
+    }}>
       <div className="flex-1 overflow-hidden">
         {Comp && <Comp />}
       </div>
@@ -33,6 +39,21 @@ export const StepContent: FC = () => {
 
 function Nav() {
   const { currentStep, nextStep, prevStep, canProceed } = useWizardStore();
+  const stepRef = useRef(currentStep);
+  stepRef.current = currentStep;
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== " ") return;
+      if (stepRef.current >= 8) return;
+      const el = document.activeElement;
+      if (!el || el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.getAttribute("role") === "radio" || el.getAttribute("role") === "checkbox") return;
+      if (canProceed()) { e.preventDefault(); nextStep(); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [canProceed, nextStep]);
+
   return (
     <div className="shrink-0 flex items-center justify-between pt-2 border-t border-border">
       <button onClick={prevStep} disabled={currentStep === 1}
@@ -49,9 +70,10 @@ function Nav() {
       {currentStep < 8 && (
         <button onClick={nextStep} disabled={!canProceed()}
           className="flex items-center gap-1 text-xs text-accent hover:text-accent/80 transition-colors disabled:opacity-20 disabled:pointer-events-none font-medium">
-          Continue <ArrowRight className="size-3" />
+          Continue <span className="text-[9px] text-dim font-mono ml-1">&#9000;</span> <ArrowRight className="size-3" />
         </button>
       )}
+
     </div>
   );
 }
