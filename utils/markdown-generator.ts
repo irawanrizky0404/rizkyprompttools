@@ -1149,6 +1149,10 @@ export function generateMarkdownPrompt(selections: WizardSelections): string {
   sections.push(lang.blueprintGenerated + " " + new Date().toISOString().split("T")[0]);
   sections.push(lang.status);
   sections.push(lang.nextSteps);
+  sections.push("");
+  sections.push("---");
+  sections.push("");
+  sections.push(lang.systemPrompt);
 
   return sections.join("\n");
 }
