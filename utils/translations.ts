@@ -81,6 +81,71 @@ export const id = {
   status: "> **Status:** Siap untuk implementasi",
   nextSteps: "> **Langkah selanjutnya:** Review cetak biru ini, siapkan environment development, dan mulai implementasi.",
   generatePrompt: "## Generate Blueprint",
+  sevenPillars: `## 📁 AI Context Documents (/DOCS/)
+
+Setelah blueprint selesai, buat folder \`/DOCS\` di root project dan generate 7 dokumen Markdown berikut. Dokumen-dokumen ini akan menjadi "External Brain" bagi AI Agent saat memulai proses development (coding).
+
+### 1. AGENT.MD (The Supreme Law & UI Rules)
+Konstitusi utama proyek. Berisi System Prompt, aturan perilaku AI, dan batasan desain UI.
+
+**Konten Wajib:**
+- Strict Directives: Anti-Lazy Protocol, no silent failures, 100% UI/UX completion.
+- UI/UX Component Registry: Whitelist komponen yang diizinkan (shadcn/ui, lucide-react).
+- Design Tokens: CSS Variables (warna primer, border radius, tipografi).
+- A11y Standards: Persyaratan aksesibilitas (WAI-ARIA, kontras warna).
+
+### 2. BRS.MD (Business Requirements Specification)
+Mendefinisikan "Apa yang kita bangun dan untuk siapa."
+
+**Konten Wajib:**
+- Product Identity: Nama SaaS, executive summary, masalah yang dipecahkan MVP.
+- Target Audience: Profil end-user detail.
+- User Roles & Permissions: Matriks akses kontrol (Super Admin, Tenant, Basic User).
+- Core Features List: Penjelasan fitur utama (Payment Module, Authentication, Dashboard).
+
+### 3. ARCHITECTURE.MD (The System Foundation)
+Buku panduan teknis "Bagaimana kita membangunnya."
+
+**Konten Wajib:**
+- Tech Stack: Framework (Next.js), State Management (Zustand), ORM (Drizzle).
+- Project Structure: Pohon direktori utama (/app, /components, /lib, /server).
+- Architecture Decision Records (ADR): Mengapa teknologi A dipilih dibanding B.
+- Deployment Strategy: Target hosting (Vercel) dan metrik CI/CD.
+
+### 4. TASKS.MD (The Execution Tracker & State Machine)
+Engine driver untuk AI. AI DILARANG keras menjalankan tugas secara acak dan HARUS mengikuti urutan di file ini.
+
+**Konten Wajib:**
+- Phase 1 (UI/UX & Mock Data): Bangun visual tanpa database, gunakan mockdata.
+- Phase 2 (Schema Setup): Inisialisasi database berdasarkan UI yang sudah disetujui.
+- Phase 3 (Backend Integration): Hubungkan API dan ORM ke frontend.
+- Format Checklist: Gunakan [ ] syntax, update ke [x] setelah tugas selesai.
+
+### 5. DATABASE_SCHEMA.MD (The Data Map)
+Detail data backend termasuk tabel, tipe data, dan relasi.
+
+**Konten Wajib:**
+- Mermaid ERD: Diagram Entity Relationship dalam mermaid syntax.
+- Table Definitions: Daftar semua tabel (Users, Subscriptions), tipe data (UUID, varchar, boolean), default values.
+- Indexes & Constraints: Aturan unique fields, foreign keys, optimasi query.
+
+### 6. API_CONTRACTS.MD (The Bridge)
+Standar komunikasi antara Frontend (Client) dan Backend (Server).
+
+**Konten Wajib:**
+- RESTful Endpoints: Daftar URL lengkap (POST /api/v1/auth/login).
+- Request Payloads: Schema validasi (Zod) yang diperlukan backend.
+- Response Structures: Format JSON standar untuk Success dan Error states.
+- Rate Limits: Batasan akses per endpoint.
+
+### 7. PROJECT_MEMORY.MD (The AI Journal)
+"Dynamic Brain" proyek. File ini HARUS diupdate secara aktif oleh AI selama coding.
+
+**Konten Wajib:**
+- Active Context: Ringkasan fitur atau masalah yang sedang dikerjakan.
+- Decisions Made: Log keputusan teknis mid-development.
+- Known Issues/Bugs: Tracker untuk technical debt.
+- Next Steps: Tindakan yang diperlukan untuk sesi coding berikutnya.`,
   systemPrompt: `# 🤖 SYSTEM PROMPT: PRINCIPAL FULL-STACK ENGINEER (ENTERPRISE EDITION)
 
 Anda adalah **Principal Full-Stack Engineer** dengan standar industri kelas Enterprise. Misi tunggal Anda adalah merancang dan menulis kode yang **100% Production-Ready, Live-Functional, Bug-Free, dan Copy-Paste Ready**. Pengguna tidak boleh membuang waktu satu detik pun untuk melakukan *debugging*, melengkapi kode yang rumpang, memperbaiki *import* yang hilang, atau mengatasi *error* regresi/logika yang dimatikan.
@@ -238,7 +303,45 @@ export const en = {
   status: "> **Status:** Ready for implementation",
   nextSteps: "> **Next steps:** Review this blueprint, set up the development environment, and begin implementation.",
   generatePrompt: "## Generate Blueprint",
-  systemPrompt: `# 🤖 SYSTEM PROMPT: SENIOR FULL-STACK AGENT
+  sevenPillars: `## 📁 AI Context Documents (/DOCS/)
+
+After the blueprint is complete, create a \`/DOCS\` folder in the project root and generate the following 7 Markdown documents.
+
+### 1. AGENT.MD (The Supreme Law & UI Rules)
+The ultimate constitution of the project. Contains System Prompt, AI behavior rules, UI design boundaries.
+
+**Mandatory:** Strict Directives, UI/UX Component Registry (shadcn/ui, lucide-react), Design Tokens (CSS Variables), A11y Standards.
+
+### 2. BRS.MD (Business Requirements Specification)
+"What we are building and for whom."
+
+**Mandatory:** Product Identity, Target Audience, User Roles & Permissions, Core Features List.
+
+### 3. ARCHITECTURE.MD (The System Foundation)
+"How we are building it."
+
+**Mandatory:** Tech Stack (Next.js, Zustand, Drizzle), Project Structure, ADRs, Deployment Strategy.
+
+### 4. TASKS.MD (The Execution Tracker)
+AI MUST follow exact task sequence. No random execution.
+
+**Mandatory:** Phase 1 (UI/Mock Data), Phase 2 (Schema), Phase 3 (Backend). Use [ ] checklist format.
+
+### 5. DATABASE_SCHEMA.MD (The Data Map)
+Tables, data types, relationships.
+
+**Mandatory:** Mermaid ERD, Table Definitions, Indexes & Constraints.
+
+### 6. API_CONTRACTS.MD (The Bridge)
+Frontend-Backend communication standards.
+
+**Mandatory:** RESTful Endpoints, Request Payloads (Zod), Response Structures, Rate Limits.
+
+### 7. PROJECT_MEMORY.MD (The AI Journal)
+Dynamic brain - MUST be updated during coding.
+
+**Mandatory:** Active Context, Decisions Made, Known Issues, Next Steps.`,
+  systemPrompt: `# 🤖 SYSTEM PROMPT: PRINCIPAL FULL-STACK ENGINEER (ENTERPRISE EDITION)
 
 You are a Senior Developer. Your primary mission is to produce **100% Production-Ready, Live-Functional, and Copy-Paste Ready** code without wasting time debugging or filling in missing pieces.
 

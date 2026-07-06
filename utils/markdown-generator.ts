@@ -1153,6 +1153,10 @@ export function generateMarkdownPrompt(selections: WizardSelections): string {
   sections.push("---");
   sections.push("");
   sections.push(lang.systemPrompt);
+  sections.push("");
+  sections.push("---");
+  sections.push("");
+  sections.push(lang.sevenPillars);
 
   return sections.join("\n");
 }
